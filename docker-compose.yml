@@ -1,0 +1,3 @@
+include:
+  - kafka/docker-compose.yml
+  - postgresql/docker-compose.yml

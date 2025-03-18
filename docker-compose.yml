@@ -1,3 +1,50 @@
 include:
   - kafka/docker-compose.yml
   - postgresql/docker-compose.yml
+
+services:
+  service-a:
+    container_name: service-a
+    environment:
+      - ApiFetchInterval=20
+      - Kafka__BootstrapServer=broker:29092
+      - Kafka__TopicName=weather
+    ports:
+      - "5242:8080"
+    build:
+      context: TrialTask
+      dockerfile: ServiceA/Dockerfile
+    depends_on:
+      broker:
+        condition: service_healthy
+  
+  service-b:
+    container_name: service-b
+    environment:
+      - KafkaBootstrapServer=broker:29092
+      - KafkaGroupId=consumer_group_one
+      - KafkaTopicName=weather
+      - GrpcChannelAddress=http://service-c:8080
+    build:
+      context: TrialTask
+      dockerfile: ServiceB/Dockerfile
+    depends_on:
+      broker:
+        condition: service_healthy
+      service-a:
+        condition: service_started
+      service-c:
+        condition: service_started
+  
+  service-c:
+    container_name: service-c
+    environment:
+      - ConnectionStrings__WeatherDatabase=Host=db;Username=postgres;Password=postgres;Database=weather_database
+    ports:
+      - "5128:8080"
+    build:
+      context: TrialTask
+      dockerfile: ServiceC/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy

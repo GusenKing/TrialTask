@@ -2,7 +2,7 @@ using ServiceA.Services;
 using ServiceA.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
-await KafkaUtility.CreateTopicAsync(builder.Configuration["Kafka:BootstrapServers"]!,
+await KafkaUtility.CreateTopicAsync(builder.Configuration["Kafka:BootstrapServer"]!,
     builder.Configuration["Kafka:TopicName"]!);
 
 builder.Logging.ClearProviders();

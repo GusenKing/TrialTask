@@ -17,7 +17,7 @@ public class KafkaProducerService : IKafkaProducerService
         _logger = logger;
         var config = new ProducerConfig
         {
-            BootstrapServers = configuration["Kafka:BootstrapServers"]
+            BootstrapServers = configuration["Kafka:BootstrapServer"]
         };
         _producer = new ProducerBuilder<Null, string>(config).Build();
     }

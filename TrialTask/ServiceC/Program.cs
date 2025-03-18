@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ServiceC;
 using ServiceC.GraphQL;
+using ServiceC.Repositories;
 using WeatherService = ServiceC.Services.WeatherService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddGraphQLServer().AddQueryType<Query>()
     .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);
 builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
     optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("WeatherDatabase")));
+builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
 
 var app = builder.Build();
 

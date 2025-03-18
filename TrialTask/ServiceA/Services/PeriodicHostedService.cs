@@ -2,11 +2,12 @@ namespace ServiceA.Services;
 
 public class PeriodicHostedService(
     ILogger<PeriodicHostedService> logger,
+    IConfiguration configuration,
     IServiceScopeFactory factory,
     IKafkaProducerService producerService)
     : BackgroundService
 {
-    private readonly TimeSpan _period = TimeSpan.FromSeconds(20);
+    private readonly TimeSpan _period = TimeSpan.FromSeconds(int.Parse(configuration["ApiFetchInterval"]));
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

@@ -10,7 +10,7 @@ public interface IWeatherRepository
     public Task<List<WeatherInfoEntity>> GetWeatherInfoAsync();
 }
 
-public class WeatherInfoRepository(AppDbContext dbContext) : IWeatherRepository
+public class WeatherRepository(AppDbContext dbContext) : IWeatherRepository
 {
     public async Task AddWeatherInfoAsync(WeatherInfoEntity weatherInfo)
     {

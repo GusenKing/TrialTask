@@ -8,20 +8,31 @@ public class KafkaConsumerService
 {
     private readonly IConsumer<Null, string> _consumer;
 
-    public KafkaConsumerService(string bootstrapServer)
+    public KafkaConsumerService()
     {
+        var KafkaBootstrapServer =
+            Environment.GetEnvironmentVariable("KafkaBootstrapServer", EnvironmentVariableTarget.Process);
+        var GroupId =
+            Environment.GetEnvironmentVariable("KafkaGroupId", EnvironmentVariableTarget.Process);
+
         var config = new ConsumerConfig
         {
-            BootstrapServers = bootstrapServer,
+            BootstrapServers = KafkaBootstrapServer,
+            GroupId = GroupId,
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
 
         _consumer = new ConsumerBuilder<Null, string>(config).Build();
     }
 
-    public void ConsumeMessages(string topic)
+    private string KafkaBootstrapServer { get; set; }
+    private string GroupId { get; set; }
+
+    public void ConsumeMessages()
     {
-        _consumer.Subscribe(topic);
+        var kafkaTopicName =
+            Environment.GetEnvironmentVariable("KafkaTopicName", EnvironmentVariableTarget.Process);
+        _consumer.Subscribe(kafkaTopicName);
         var grpcClient = new ServiceCGrpcClient();
 
         try
@@ -29,8 +40,9 @@ public class KafkaConsumerService
             while (true)
             {
                 var consumeResult = _consumer.Consume();
-                var deserializedWeatherInfo = JsonSerializer.Deserialize<WeatherInfoDto>(consumeResult.Message.Value);
+                Console.WriteLine($"Consumed message: {consumeResult.Message.Value}");
 
+                var deserializedWeatherInfo = JsonSerializer.Deserialize<WeatherInfoDto>(consumeResult.Message.Value);
                 if (deserializedWeatherInfo?.Temperature == null)
                     throw new NullReferenceException("Temperature in deserialized weather info is null");
 
@@ -39,8 +51,6 @@ public class KafkaConsumerService
                     Temperature = (float)deserializedWeatherInfo.Temperature,
                     TemperatureUnits = deserializedWeatherInfo.TemperatureUnit, Time = deserializedWeatherInfo.Time
                 });
-
-                Console.WriteLine($"Consumed message: {consumeResult.Message.Value}");
             }
         }
         catch (ConsumeException e)

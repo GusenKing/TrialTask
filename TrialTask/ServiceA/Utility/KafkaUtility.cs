@@ -5,11 +5,11 @@ namespace ServiceA.Utility;
 
 public static class KafkaUtility
 {
-    public static async Task CreateTopicAsync(string bootstrapServers, string topicName)
+    public static async Task CreateTopicAsync(string bootstrapServer, string topicName)
     {
         using var adminClient = new AdminClientBuilder(new AdminClientConfig
         {
-            BootstrapServers = bootstrapServers
+            BootstrapServers = bootstrapServer
         }).Build();
 
         try

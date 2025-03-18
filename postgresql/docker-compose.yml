@@ -1,13 +1,16 @@
 services:
   db:
     image: postgres:alpine
-    build:
-      context: .
     environment:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
 volumes:
   pg-data:

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "ServiceC";
+
+import "google/protobuf/empty.proto";
+package ServiceC;
+
+service WeatherService {
+  rpc SetWeather (WeatherInfo) returns (google.protobuf.Empty);
+}
+
+message WeatherInfo {
+  string time = 1;
+  float temperature = 2;
+  string temperature_units = 3;
+}

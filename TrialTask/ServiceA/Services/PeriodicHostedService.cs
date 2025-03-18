@@ -3,7 +3,7 @@ namespace ServiceA.Services;
 public class PeriodicHostedService(
     ILogger<PeriodicHostedService> logger,
     IServiceScopeFactory factory,
-    KafkaProducerService producerService)
+    IKafkaProducerService producerService)
     : BackgroundService
 {
     private readonly TimeSpan _period = TimeSpan.FromSeconds(20);

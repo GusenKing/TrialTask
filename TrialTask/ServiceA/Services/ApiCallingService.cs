@@ -1,3 +1,7 @@
+using System.Text.Json;
+using Common.Dtos.WeatherInfoDto;
+using ServiceA.Dtos;
+
 namespace ServiceA.Services;
 
 public class ApiCallingService(ILogger<ApiCallingService> logger)
@@ -17,11 +21,17 @@ public class ApiCallingService(ILogger<ApiCallingService> logger)
                     $"{_currentWeatherApiUrl}&latitude={KazanLatitude}&longitude={KazanLongitude}");
             response.EnsureSuccessStatusCode();
 
-            // var weatherForecast = await JsonSerializer.DeserializeAsync<CurrentWeatherDto>(
-            //     await response.Content.ReadAsStreamAsync(),
-            //     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var weatherForecast = await JsonSerializer.DeserializeAsync<CurrentWeatherDto>(
+                await response.Content.ReadAsStreamAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            return await response.Content.ReadAsStringAsync();
+            var necessaryWeatherInfo = new WeatherInfoDto
+            {
+                Temperature = weatherForecast?.Current?.Temperature,
+                TemperatureUnit = weatherForecast?.CurrentUnits?.Temperature, Time = weatherForecast?.Current?.Time
+            };
+
+            return JsonSerializer.Serialize(necessaryWeatherInfo);
         }
         catch (HttpRequestException e)
         {

@@ -9,7 +9,9 @@ public class ApiCallingService(ILogger<ApiCallingService> logger)
     private const double KazanLatitude = 55.47;
     private const double KazanLongitude = 49.07;
 
-    private readonly string _currentWeatherApiUrl = "https://api.open-meteo.com/v1/forecast?current=temperature_2m";
+    private readonly string _currentWeatherApiUrl =
+        "https://api.open-meteo.com/v1/forecast?current=temperature_2m&timezone=Europe/Moscow";
+
     private readonly HttpController _httpController = new();
 
     public async Task<string?> GetWeatherForecastAsync()

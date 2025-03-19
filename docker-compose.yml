@@ -6,7 +6,7 @@ services:
   service-a:
     container_name: service-a
     environment:
-      - ApiFetchInterval=20
+      - ApiFetchInterval=60
       - Kafka__BootstrapServer=broker:29092
       - Kafka__TopicName=weather
     ports:

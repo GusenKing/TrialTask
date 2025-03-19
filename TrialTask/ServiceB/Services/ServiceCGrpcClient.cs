@@ -13,7 +13,8 @@ public class ServiceCGrpcClient
 
     public void SetWeather(WeatherInfo weather)
     {
-        using var channel = GrpcChannel.ForAddress(ChannelAddress);
+        using var channel =
+            GrpcChannel.ForAddress(ChannelAddress);
         var client = new WeatherService.WeatherServiceClient(channel);
 
         var reply = client.SetWeather(weather);

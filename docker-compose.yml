@@ -39,9 +39,13 @@ services:
   service-c:
     container_name: service-c
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8080;http://+:8081
+      - ASPNETCORE_HTTPS_PORT=8080
       - ConnectionStrings__WeatherDatabase=Host=db;Username=postgres;Password=postgres;Database=weather_database
     ports:
       - "5128:8080"
+      - "5129:8081"
     build:
       context: TrialTask
       dockerfile: ServiceC/Dockerfile

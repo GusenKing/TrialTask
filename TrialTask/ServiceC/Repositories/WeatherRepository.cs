@@ -20,6 +20,7 @@ public class WeatherRepository(AppDbContext dbContext) : IWeatherRepository
 
     public async Task<List<WeatherInfoEntity>> GetWeatherInfoAsync()
     {
-        return await dbContext.WeatherInfo.AsNoTracking().Take(10).ToListAsync();
+        return await dbContext.WeatherInfo.AsNoTracking().OrderByDescending(weather => weather.Time).Take(10)
+            .ToListAsync();
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using ServiceC;
 using ServiceC.GraphQL;
@@ -12,6 +13,12 @@ builder.Services.AddGraphQLServer().AddQueryType<Query>()
 builder.Services.AddDbContext<AppDbContext>(optionsBuilder =>
     optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("WeatherDatabase")));
 builder.Services.AddTransient<IWeatherRepository, WeatherRepository>();
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8080, listenOptions => listenOptions.Protocols = HttpProtocols.Http2);
+    options.ListenAnyIP(8081, listenOptions => listenOptions.Protocols = HttpProtocols.Http1);
+});
 
 var app = builder.Build();
 
